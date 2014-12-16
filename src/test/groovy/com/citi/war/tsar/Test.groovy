@@ -22,7 +22,7 @@ class Test {
                 return ParseUtils.parseLogEntry(line)
             }
         })
-        def tree = new TreeBuilder().buildTree(new ArrayList(paths.values()));
+        def tree = new TreeBuilder().buildTree(paths);
 //        file.eachLine {
 //            counter++
 //            if (counter % 10000 == 0) println counter;

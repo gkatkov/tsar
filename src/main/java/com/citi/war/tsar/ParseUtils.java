@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -17,7 +18,7 @@ import static java.util.stream.Collectors.toMap;
 public class ParseUtils {
     public static LogEntry parseLogEntry(String raw) {
         final String[] parts = raw.split(" ", 4);
-        final Date date = new Date(Long.valueOf(parts[0]));
+        final Long date = Long.valueOf(parts[0]);
         final String system = parts[1];
         final String factString = parts[3];
         final String rawAttributes = factString.substring(factString.indexOf("[") + 1, factString.indexOf("]"));

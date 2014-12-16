@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
  */
 public class TreeBuilder {
 
-    public Map<String, Set<String>> buildTree(List<List<String>> paths) {
+    public Map<String, Set<String>> buildTree(Map<Map<String, String>, List<String>> paths) {
         Map<String, AtomicLong> id2Finish = new HashMap<>();
         
         HashMap<String, Set<String>> tree = new HashMap<>();
-        for (List<String> path : paths) {
+        for (Map.Entry<Map<String, String>, List<String>> fact2Path : paths.entrySet()) {
+            List<String> path = fact2Path.getValue();
             for (int i = 0; i < path.size(); i++) {
                 String nodeId = path.get(i);
                 if (i == 0) {

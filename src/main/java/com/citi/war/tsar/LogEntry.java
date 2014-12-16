@@ -1,6 +1,5 @@
 package com.citi.war.tsar;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -8,20 +7,19 @@ import java.util.Map;
  * @since 16.12.2014
  */
 public class LogEntry {
-    private final Date date;
+    private final Long date;
 
     private final String system;
 
     private final Map<String, String> attributes;
 
-    public LogEntry(Date date, String system, Map<String, String> attributes) {
-
+    public LogEntry(Long date, String system, Map<String, String> attributes) {
         this.date = date;
         this.system = system;
         this.attributes = attributes;
     }
 
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 
