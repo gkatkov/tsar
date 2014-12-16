@@ -13,16 +13,15 @@ class Test {
         long counter = 0
         def List<Map> maps = []
 
-        def file = new BufferedReader(new FileReader("src/test/resources/output-sample.log"))
-        def paths = ParseUtils.collectPaths(new Supplier<LogEntry>() {
-            @Override
-            LogEntry get() {
-                def line = file.readLine()
-                if (line == null) return null;
-                return ParseUtils.parseLogEntry(line)
-            }
-        })
-        def tree = new TreeBuilder().buildTree(paths);
+        def fileName = "C:\\Users\\dbrusentsov\\Downloads\\output-sample\\output-sample.log"
+
+        def factIndex = new FactIndex()
+
+        def fact2Path = factIndex.indexByEntry(fileName)
+
+//        atzRH=478947
+
+        def tree = new TreeBuilder().buildTree(fact2Path)
 //        file.eachLine {
 //            counter++
 //            if (counter % 10000 == 0) println counter;

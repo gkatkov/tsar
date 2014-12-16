@@ -15,21 +15,21 @@ import java.util.stream.Collectors;
  */
 public class TreeBuilder {
 
-    public Map<String, Set<String>> buildTree(Map<Map<String, String>, List<String>> paths) {
+    public Map<String, Set<String>> buildTree(Map<Map<String, String>, List<SystemDate>> paths) {
         Map<String, AtomicLong> id2Finish = new HashMap<>();
         
         HashMap<String, Set<String>> tree = new HashMap<>();
-        for (Map.Entry<Map<String, String>, List<String>> fact2Path : paths.entrySet()) {
-            List<String> path = fact2Path.getValue();
+        for (Map.Entry<Map<String, String>, List<SystemDate>> fact2Path : paths.entrySet()) {
+            List<SystemDate> path = fact2Path.getValue();
             for (int i = 0; i < path.size(); i++) {
-                String nodeId = path.get(i);
+                SystemDate systemDate = path.get(i);
                 if (i == 0) {
-                    tree.computeIfAbsent(null, n -> new HashSet<>()).add(nodeId);
+                    tree.computeIfAbsent(null, n -> new HashSet<>()).add(systemDate.system);
                 } else {
-                    tree.computeIfAbsent(path.get(i - 1), n -> new HashSet<>()).add(nodeId);
+                    tree.computeIfAbsent(path.get(i - 1).system, n -> new HashSet<>()).add(systemDate.system);
                 }
                 if (i == path.size() - 1) {
-                    id2Finish.computeIfAbsent(nodeId, id -> new AtomicLong(0)).incrementAndGet();
+                    id2Finish.computeIfAbsent(systemDate.system, id -> new AtomicLong(0)).incrementAndGet();
                 }
             }
         }
