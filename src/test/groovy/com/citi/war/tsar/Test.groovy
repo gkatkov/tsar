@@ -1,7 +1,4 @@
 package com.citi.war.tsar
-
-import java.util.function.Supplier
-
 /**
  * Created by GKatkov on 16.12.2014.
  */
@@ -15,7 +12,7 @@ class Test {
 
         def fileName = "C:\\Users\\dbrusentsov\\Downloads\\output-sample\\output-sample.log"
 
-        def factIndex = new FactIndex()
+        def factIndex = new FactIndexer()
 
         def fact2Path = factIndex.indexByEntry(fileName)
 

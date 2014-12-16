@@ -10,12 +10,14 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toSet;
+
 /**
  * Created by GKatkov on 16.12.2014.
  */
 public class TreeBuilder {
 
-    public Map<String, Set<String>> buildTree(Map<Map<String, String>, List<SystemDate>> paths) {
+    public TreeStats buildTree(Map<Map<String, String>, List<SystemDate>> paths) {
         Map<String, AtomicLong> id2Finish = new HashMap<>();
         
         HashMap<String, Set<String>> tree = new HashMap<>();
@@ -42,6 +44,12 @@ public class TreeBuilder {
         sortedTerminateNodes.forEach(System.out::println);
         System.out.println("*******************************************");
         System.out.println("Originating systems: " + tree.get(null));
-        return tree;
+        return new TreeStats(tree, tree.get(null), findTrueTerminals(sortedTerminateNodes));
+    }
+
+    private Set<String> findTrueTerminals(List<Map.Entry<String, AtomicLong>> terminals) {
+        return terminals.stream().filter(sysToFlows -> sysToFlows.getValue().get() / 1000 > 0)
+                .map(Map.Entry::getKey)
+                .collect(toSet());
     }
 }
