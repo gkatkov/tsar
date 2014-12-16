@@ -1,5 +1,7 @@
 package com.citi.war.tsar
 
+import java.util.function.Supplier
+
 /**
  * Created by GKatkov on 16.12.2014.
  */
@@ -8,14 +10,30 @@ class Test {
     @org.junit.Test
     void "test" () {
         def datePrev
-        new File("src/test/resources/output-sample.log").eachLine {
-            def entry = parseEntry(it)
-            if (entry.fact.get("at7DE") == "588407" && entry.fact.get("atz0A") == "VeGS") {
-                println entry
+        long counter = 0
+        def List<Map> maps = []
+
+        def file = new BufferedReader(new FileReader("src/test/resources/output-sample.log"))
+        def paths = ParseUtils.collectPaths(new Supplier<LogEntry>() {
+            @Override
+            LogEntry get() {
+                def line = file.readLine()
+                if (line == null) return null;
+                return ParseUtils.parseLogEntry(line)
             }
-        }
+        })
+        def tree = new TreeBuilder().buildTree(new ArrayList(paths.values()));
+//        file.eachLine {
+//            counter++
+//            if (counter % 10000 == 0) println counter;
+//        }
     }
 
+    static boolean isASubMap(Map a, Map b) {
+        return a.findAll {k, v ->
+            b.containsKey(k) && b.get(k) == v
+        }.size() == a.size()
+    }
 
     static Map parseEntry(String entry) {
         def cells = entry.split(" ", 4)
