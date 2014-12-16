@@ -10,7 +10,9 @@ class Test {
         def datePrev
         new File("src/test/resources/output-sample.log").eachLine {
             def entry = parseEntry(it)
-            assert entry.fact.get("at7DE")
+            if (entry.fact.get("at7DE") == "588407" && entry.fact.get("atz0A") == "VeGS") {
+                println entry
+            }
         }
     }
 
@@ -19,7 +21,7 @@ class Test {
         def cells = entry.split(" ", 4)
         def date = new Date(Long.valueOf(cells[0]))
         def system = cells[1]
-        def attrsString = cells[3][5..(cells[3].size() - 2)]
+        def attrsString = cells[3][5..(cells[3].size() - 3)]
         def fact = attrsString[1..(attrsString.size() - 1)].split(",").collectEntries {
             def a = it.trim().split(":")
             [(a[0]): a[1]]
