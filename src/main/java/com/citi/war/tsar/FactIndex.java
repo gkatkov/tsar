@@ -36,10 +36,4 @@ public class FactIndex {
 
         return index;
     }
-
-    public static void main(String[] args) {
-        final FactIndex factIndex = new FactIndex();
-        final Map<Map<String, String>, List<SystemDate>> mapListMap = factIndex.indexByEntry("c:/users/sovsyankin/war/output-sample.log");
-        System.out.println("# of facts: " + mapListMap.size());
-    }
 }
