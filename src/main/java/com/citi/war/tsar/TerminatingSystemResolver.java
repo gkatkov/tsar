@@ -2,14 +2,17 @@ package com.citi.war.tsar;
 
 import org.javatuples.Triplet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.collect.Iterables.getLast;
 import static org.javatuples.Triplet.with;
 
 /**
@@ -18,33 +21,38 @@ import static org.javatuples.Triplet.with;
  */
 public class TerminatingSystemResolver {
 
-    private static final float IGNORE_LESS = 0.015F;
+    private static final float IGNORE_LESS = 0.001F;
 
     public Set<String> resolve(Index index) {
         final Set<String> firsts = new HashSet<>();
-        final Map<String, Integer> name2Last = new HashMap<>();
+        final Map<String, Integer> last2Count = new HashMap<>();
+        final Map<String, List<Map<String, String>>> last2Facts = new HashMap<>();
 
-        index.paths().values().forEach(flow -> {
+        index.paths().entrySet().forEach(factPath -> {
+            final Map<String, String> fact = factPath.getKey();
+            final List<SystemDate> flow = factPath.getValue();
             firsts.add(flow.get(0).system);
-            name2Last.compute(flow.get(flow.size() - 1).system, (sys, cnt) -> firstNonNull(cnt, 0) + 1);
+            final String system = getLast(flow).system;
+            last2Count.compute(system, (sys, cnt) -> firstNonNull(cnt, 0) + 1);
+            last2Facts.computeIfAbsent(system, s -> new ArrayList<>()).add(fact);
         });
 
-        firsts.forEach(name2Last::remove);
+        firsts.forEach(last2Count::remove);
 
-        final int totalCount = name2Last
+        final long totalCount = last2Count
                 .values()
                 .stream()
-                .mapToInt(v -> v)
-                .sum();
+                .collect(Collectors.summarizingInt(Number::intValue)).getSum();
 
-        final List<Triplet<String, Integer, Float>> systemCountWeights = name2Last
+        final List<Triplet<String, Integer, Float>> systemCountWeights = last2Count
                 .entrySet()
                 .stream()
                 .map(sysCntEntry -> with(sysCntEntry.getKey(), sysCntEntry.getValue(), (float) sysCntEntry.getValue() / totalCount))
                 .sorted((o1, o2) -> o1.getValue1().compareTo(o2.getValue1()))
                 .collect(Collectors.toList());
 
-        final Set<String> result = new HashSet<>();
+        final Set<String> successes = new HashSet<>();
+        final Set<String> fails = new HashSet<>();
 
         System.out.println("**********************");
         System.out.println("*terminating systems**");
@@ -55,14 +63,24 @@ public class TerminatingSystemResolver {
             totalWeight += systemCountWeight.getValue2();
             if (totalWeight < IGNORE_LESS) {
                 System.out.println("failed: " + systemCountWeight);
-                continue;
+                fails.add(systemCountWeight.getValue0());
+            } else {
+                System.out.println("terminating: " + systemCountWeight);
+                successes.add(systemCountWeight.getValue0());
             }
-            System.out.println("terminating: " + systemCountWeight);
-            result.add(systemCountWeight.getValue0());
         }
 
         System.out.println("***********************");
+        System.out.println("******failed facts*****");
+        System.out.println("***********************");
 
-        return result;
+        fails.forEach(new Consumer<String>() {
+            @Override
+            public void accept(String system) {
+                last2Facts.get(system).forEach(System.out::println);
+            }
+        });
+
+        return successes;
     }
 }

@@ -1,17 +1,20 @@
 package com.citi.war.tsar;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -50,6 +53,81 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+//        Map<String, List<Map<String, String>>> path2Facts = paths.entrySet().stream().collect(Collectors.toMap(new Function<Map.Entry<Map<String, String>, List<SystemDate>>, String>() {
+//            @Override
+//            public String apply(Map.Entry<Map<String, String>, List<SystemDate>> t) {
+//                return t.getValue().stream().map(SystemDate::getSystem).collect(Collectors.joining("->"));
+//            }
+//        }, new Function<Map.Entry<Map<String, String>, List<SystemDate>>, List<Map<String, String>>>() {
+//            @Override
+//            public List<Map<String, String>> apply(Map.Entry<Map<String, String>, List<SystemDate>> t) {
+//                ArrayList<Map<String, String>> maps = new ArrayList<>();
+//                maps.add(t.getKey());
+//                return maps;
+//            }
+//        }, new BinaryOperator<List<Map<String, String>>>() {
+//            @Override
+//            public List<Map<String, String>> apply(List<Map<String, String>> o, List<Map<String, String>> o2) {
+//                o.addAll(o2);
+//                return o;
+//            }
+//        }));
+//        try {
+//            PrintStream ps = new PrintStream("C:/path2facts2");
+//
+//            path2Facts.forEach(new BiConsumer<String, List<Map<String, String>>>() {
+//                @Override
+//                public void accept(String s, List<Map<String, String>> maps) {
+//                    ps.println(s);
+//                    maps.forEach(ps::println);
+//                }
+//            });
+//
+//            ps.flush();
+//            ps.close();
+//
+//            PrintStream doubles = new PrintStream("C:/path2factsDoubles2");
+//
+//            path2Facts.forEach(new BiConsumer<String, List<Map<String, String>>>() {
+//                @Override
+//                public void accept(String s, List<Map<String, String>> maps) {
+//                    if(maps.size() > 1){
+//                        doubles.println(s);
+//                        maps.forEach(doubles::println);
+//                    }
+//                }
+//            });
+//
+//            doubles.flush();
+//            doubles.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+//        final Set<String> probablyTerminatingSystems = terminatingSystemResolver.resolve(index);
+//
+//        final List<Pair<Map<String, String>, Set<String>>> fact2ProbablyFailedSystem = paths.entrySet()
+//                .stream()
+//                .map(entry -> Pair.with(entry.getKey(), Iterables.getLast(entry.getValue()).system))
+//                .filter(pair -> probablyTerminatingSystems.contains(pair.getValue1()))
+//                .map(new Function<Pair<Map<String, String>, String>, Pair<Map<String, String>, Set<String>>>() {
+//                    @Override
+//                    public Pair<Map<String, String>, Set<String>> apply(Pair<Map<String, String>, String> objects) {
+//                        final Set<String> nextPossibleSystems = treeStats
+//                                .getTree()
+//                                .getOrDefault(objects.getValue1(), Collections.<String>emptySet());
+//                        final Set<String> probablyFailedSystems = new HashSet<>(nextPossibleSystems);
+//                        probablyFailedSystems.removeAll(probablyTerminatingSystems);
+//                        probablyFailedSystems.removeAll(treeStats.getOriginators());
+//                        return Pair.with(objects.getValue0(), probablyFailedSystems);
+//                    }
+//                })
+//                .collect(Collectors.toList());
+//
+//        int sum = fact2ProbablyFailedSystem.stream().map(Pair::getValue1).mapToInt(Set::size).sum();
+//        System.out.println("total possible failed systems: " + sum);
+
         new GraphExporter().exportGraph(treeStats);
     }
 }
