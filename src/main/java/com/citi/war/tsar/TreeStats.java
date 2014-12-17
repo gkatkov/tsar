@@ -10,14 +10,14 @@ import java.util.Set;
 public class TreeStats {
     private final HashMap<String, Set<String>> tree;
 
-    private final Set<String> entries;
+    private final Set<String> originators;
 
     private final Set<String> terminals;
 
-    public TreeStats(HashMap<String, Set<String>> tree, Set<String> entries, Set<String> terminals) {
+    public TreeStats(HashMap<String, Set<String>> tree, Set<String> originators, Set<String> terminals) {
 
         this.tree = tree;
-        this.entries = entries;
+        this.originators = originators;
         this.terminals = terminals;
     }
 
@@ -25,8 +25,8 @@ public class TreeStats {
         return tree;
     }
 
-    public Set<String> getEntries() {
-        return entries;
+    public Set<String> getOriginators() {
+        return originators;
     }
 
     public Set<String> getTerminals() {

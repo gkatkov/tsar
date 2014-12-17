@@ -15,6 +15,10 @@ public class SystemDate implements Comparable<SystemDate> {
         this.date = date;
     }
 
+    public String getSystem() {
+        return system;
+    }
+
     @Override
     public int compareTo(SystemDate o) {
         return date.compareTo(o.date);
