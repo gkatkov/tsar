@@ -26,5 +26,6 @@ public class Main {
         treeStats.getEntries().forEach(System.out::println);
         System.out.println("Terminal nodes *********");
         treeStats.getTerminals().forEach(System.out::println);
+        new GraphExporter().exportGraph(treeStats);
     }
 }
