@@ -27,6 +27,8 @@ public class Main {
         final FactIndexer factIndexer = new FactIndexer();
         final Index index = factIndexer.indexByEntry(fileName);
         final Map<Map<String, String>, List<SystemDate>> paths = index.paths();
+        final TerminatingSystemResolver terminatingSystemResolver = new TerminatingSystemResolver();
+        terminatingSystemResolver.resolve(index);
         System.out.println("# of facts total: " + paths.size());
         System.out.println("# of simple paths: " + index.getSimple().size());
         System.out.println("# of complex paths: " + index.getComplex().size());
@@ -48,5 +50,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        new GraphExporter().exportGraph(treeStats);
     }
 }
