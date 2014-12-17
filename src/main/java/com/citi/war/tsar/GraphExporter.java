@@ -27,20 +27,22 @@ public class GraphExporter {
     public void exportGraph(TreeStats treeStats) {
         ListenableDirectedWeightedGraph<String, DefaultWeightedEdge> g = new ListenableDirectedWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-        for (String parent : treeStats.getTree().get(null)) {
+        for (String parent : treeStats.getTree().keySet()) {
             Set<String> children = treeStats.getTree().get(parent);
             children.forEach( child -> {
                 if (!g.containsVertex(child)) g.addVertex(child);
             });
-            if (!g.containsVertex(parent)) {
-                g.addVertex(parent);
-            }
-            children.forEach(child -> {
-                if (!g.containsEdge(parent, child)) {
-                    DefaultWeightedEdge defaultWeightedEdge = g.addEdge(parent, child);
-                    g.setEdgeWeight(defaultWeightedEdge, 0.2);
+            if (parent != null) {
+                if (!g.containsVertex(parent)) {
+                    g.addVertex(parent);
                 }
-            });
+                children.forEach(child -> {
+                    if (!g.containsEdge(parent, child)) {
+                        DefaultWeightedEdge defaultWeightedEdge = g.addEdge(parent, child);
+                        g.setEdgeWeight(defaultWeightedEdge, 0.2);
+                    }
+                });
+            }
         }
         exportGraph(g);
     }
